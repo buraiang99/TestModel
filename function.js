@@ -1,5 +1,5 @@
 function predecir() {
-  //Pasar canvas a version 28x28
+  //Pasar del lienzo a una version 28x28
   resample_single(canvas, 28, 28, smallcanvas);
 
   var imgData = ctx2.getImageData(0, 0, 28, 28);
@@ -7,15 +7,14 @@ function predecir() {
   var arr28 = []; //Al llegar a 28 posiciones se pone en 'arr' como un nuevo indice
   for (var p = 0, i = 0; p < imgData.data.length; p += 4) {
     var valor = imgData.data[p + 3] / 255;
-    arr28.push([valor]); //Agregar al arr28 y normalizar a 0-1. Aparte queda dentro de un arreglo en el indice 0... again
+    arr28.push([valor]); //Agregar al arr28 y normalizar a 0-1. Aparte queda dentro de un arreglo en el indice 0
     if (arr28.length == 28) {
       arr.push(arr28);
       arr28 = [];
     }
   }
 
-  arr = [arr]; //Meter el arreglo en otro arreglo por que si no tio tensorflow se enoja >:(
-  //Nah basicamente Debe estar en un arreglo nuevo en el indice 0, por ser un tensor4d en forma 1, 28, 28, 1
+  arr = [arr]; //Se pasa a otro arreglo para evitar conflicots con tensorflow
   var tensor4 = tf.tensor4d(arr);
   var resultados = modelo.predict(tensor4).dataSync();
   var mayorIndice = resultados.indexOf(Math.max.apply(null, resultados));
